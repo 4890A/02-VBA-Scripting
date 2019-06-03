@@ -24,6 +24,8 @@ Sub Main():
             Ticker_Total = 0
             Year_Close = 0
             Year_Change = 0
+            Percent_Change = 0
+
             
             ' (Re)set the row for the summary
             Summary_Row = 2
@@ -44,7 +46,7 @@ Sub Main():
             
             
             ' Loop over rows, checking if the next ticker is new
-            For i = 2 To LastRow
+            For i = 2 To LastRow + 1
                     ' Checks if the ith row is the last row for the stock
                     If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
                                 
@@ -57,14 +59,14 @@ Sub Main():
                                     ws.Range("L" & Summary_Row).Value = Ticker_Total
                                     
                                     ' Set closing price and calculate change
-                                    Year_Close = Cells(i, 6).Value
+                                    Year_Close = ws.Cells(i, 6).Value
                                     Year_Change = Year_Close - Year_Open
                                     
                                     ' Avoid div by 0 which happens when stocks open at 0
                                     If Year_Open <> 0 Then
-                                        Percent_change = (Year_Change / Year_Open)
+                                        Percent_Change = (Year_Change / Year_Open)
                                     Else
-                                        Percent_change = Null
+                                        Percent_Change = Null
                                     End If
                                         
                                     
@@ -76,16 +78,16 @@ Sub Main():
                                         ws.Range("J" & Summary_Row).Interior.ColorIndex = 4
                                     End If
                 
-                                    ws.Range("K" & Summary_Row).Value = Percent_change
+                                    ws.Range("K" & Summary_Row).Value = Percent_Change
                                     ws.Range("K" & Summary_Row).NumberFormat = "0.00%"
                                     
-                                    If Percent_change > Greatest_Inc Then
-                                        Greatest_Inc = Percent_change
+                                    If Percent_Change > Greatest_Inc Then
+                                        Greatest_Inc = Percent_Change
                                         Inc_Ticker = Ticker_Name
                                     End If
                                     
-                                    If Percent_change < Greatest_Dec Then
-                                        Greatest_Dec = Percent_change
+                                    If Percent_Change < Greatest_Dec Then
+                                        Greatest_Dec = Percent_Change
                                         Dec_Ticker = Ticker_Name
                                     End If
                                     
@@ -99,7 +101,7 @@ Sub Main():
                                     ' Increment the row for the next entry in the summary
                                     Summary_Row = Summary_Row + 1
                                     
-                                    Year_Open = Cells(i + 1, 3).Value
+                                    Year_Open = ws.Cells(i + 1, 3).Value
                                     
                     Else
                                     ' Same stock, update the total
@@ -107,24 +109,23 @@ Sub Main():
                     End If
             Next i
             
-                    
+    		' Headers for Hard Difficulty Table         
             ws.Range("O2").Value = "Greatest % Increase"
             ws.Range("O3").Value = "Greatest % Decrease"
             ws.Range("O4").Value = "Greatest Volume"
-            
+
+			' Tickers for Greatest *	
             ws.Range("P2").Value = Inc_Ticker
             ws.Range("P3").Value = Dec_Ticker
             ws.Range("P4").Value = Vol_Ticker
-    
-            ws.Range("P2").Value = Inc_Ticker
-            ws.Range("P3").Value = Dec_Ticker
-            ws.Range("P4").Value = Vol_Ticker
-            
+           
+			' Values for greatest * and formatting
             ws.Range("Q2").Value = Greatest_Inc
             ws.Range("Q2").NumberFormat = "0.00%"
             ws.Range("Q3").Value = Greatest_Dec
             ws.Range("Q3").NumberFormat = "0.00%"
             ws.Range("Q4").Value = Greatest_Vol
+            
             
         Next
     
